@@ -84,7 +84,7 @@ predicted_test = KnnPredict(X_train, Y_train, X_test, k=5)
 print("KNN - no preprocessing:", sum(Y_test == predicted_test)/lim)
 
 
-# ## Simple ANN for MNIST data set
+# ## Simple ANN (MLP) for MNIST data set
 
 # In[127]:
 
