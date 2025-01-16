@@ -1,5 +1,6 @@
 import preprocessing
 import mlp
+import time
 
 dataset_path = "small/mfeat-pix"
 data = preprocessing.load_data(dataset_path)
@@ -24,8 +25,10 @@ epochs = 1000
 
 # Training
 print("Beginning training...")
+start_time = time.time()
 W1, b1, W2, b2 = mlp.train(train_data, train_labels_one_hot, input_size, hidden_size, output_size, learning_rate, epochs)
-print("Train completed.")
+end_time = time.time()
+print(f"Train completed in {end_time - start_time:.2f} seconds.")
 
 # Prediction
 train_predictions = mlp.predict(train_data, W1, b1, W2, b2)
