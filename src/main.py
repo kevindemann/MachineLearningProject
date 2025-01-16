@@ -1,4 +1,5 @@
 import preprocessing
+import mlp
 
 dataset_path = "small/mfeat-pix"
 data = preprocessing.load_data(dataset_path)
@@ -15,3 +16,31 @@ train_labels, test_labels = preprocessing.create_labels(num_classes, train_sampl
 train_labels_one_hot = preprocessing.one_hot_encode(train_labels)
 test_labels_one_hot = preprocessing.one_hot_encode(test_labels)
 
+input_size = train_data.shape[1]
+hidden_size = 64
+output_size = num_classes
+learning_rate = 0.01
+epochs = 1000
+
+# Training
+print("Beginning training...")
+W1, b1, W2, b2 = mlp.train(
+    X_train=train_data,
+    y_train=train_labels_one_hot,
+    input_size=input_size,
+    hidden_size=hidden_size,
+    output_size=output_size,
+    learning_rate=learning_rate,
+    epochs=epochs
+)
+print("Train completed.")
+
+# Prediction
+train_predictions = mlp.predict(train_data, W1, b1, W2, b2)
+train_accuracy = mlp.accuracy(train_labels_one_hot, train_predictions)
+print(f"Accuracy on train set: {train_accuracy * 100:.2f}%")
+
+# Test
+test_predictions = mlp.predict(test_data, W1, b1, W2, b2)
+test_accuracy = mlp.accuracy(test_labels_one_hot, test_predictions)
+print(f"Accuracy on test set: {test_accuracy * 100:.2f}%")
