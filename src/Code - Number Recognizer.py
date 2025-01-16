@@ -41,8 +41,6 @@ encoder = OneHotEncoder(sparse_output=False)
 train_labels_one_hot = encoder.fit_transform(train_labels.reshape(-1, 1))
 test_labels_one_hot = encoder.transform(test_labels.reshape(-1, 1))
 
-print("Shape of train_labels_one_hot:", train_labels_one_hot.shape)
-print("Shape of test_labels_one_hot:", test_labels_one_hot.shape)
 
 
 # training_images_data ='Data/train-images.idx3-ubyte'
