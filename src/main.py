@@ -24,15 +24,7 @@ epochs = 1000
 
 # Training
 print("Beginning training...")
-W1, b1, W2, b2 = mlp.train(
-    X_train=train_data,
-    y_train=train_labels_one_hot,
-    input_size=input_size,
-    hidden_size=hidden_size,
-    output_size=output_size,
-    learning_rate=learning_rate,
-    epochs=epochs
-)
+W1, b1, W2, b2 = mlp.train(train_data, train_labels_one_hot, input_size, hidden_size, output_size, learning_rate, epochs)
 print("Train completed.")
 
 # Prediction
