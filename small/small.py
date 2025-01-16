@@ -2,7 +2,7 @@ import numpy as np
 
 from matplotlib import pyplot as plt
 
-with open("mfeat-pix") as datafile:
+with open("small/mfeat-pix") as datafile:
     raw_data = datafile.read()
 
 lines = raw_data.split('\n')

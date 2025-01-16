@@ -3,25 +3,62 @@
 
 # In[123]:
 
-
 import matplotlib.pyplot as plt
 import numpy as np
 import idx2numpy
+from sklearn.preprocessing import OneHotEncoder
 
-training_images_data ='Data/train-images.idx3-ubyte'
-training_labels_data = 'Data/train-labels.idx1-ubyte'
-test_images_data = 'Data/t10k-images.idx3-ubyte'
-test_labels_data = 'Data/t10k-labels.idx1-ubyte'
+data = np.loadtxt('small/mfeat-pix')
+
+print("Shape of data:", data.shape)
+
+num_classes = 10
+samples_per_class = 200
+train_samples_per_class = 100
+test_samples_per_class = 100
+
+train_data = []
+test_data = []
+
+for i in range(num_classes):
+    class_data = data[i * samples_per_class:(i + 1) * samples_per_class]
+
+    train_data.append(class_data[:train_samples_per_class])
+
+    test_data.append(class_data[train_samples_per_class:])
+
+train_data = np.vstack(train_data)
+test_data = np.vstack(test_data)
+
+print("Shape of train set:", train_data.shape)
+print("Shape of test set:", test_data.shape)
+
+train_labels = np.repeat(np.arange(num_classes), train_samples_per_class)
+test_labels = np.repeat(np.arange(num_classes), test_samples_per_class)
+
+encoder = OneHotEncoder(sparse_output=False)
+
+train_labels_one_hot = encoder.fit_transform(train_labels.reshape(-1, 1))
+test_labels_one_hot = encoder.transform(test_labels.reshape(-1, 1))
+
+print("Shape of train_labels_one_hot:", train_labels_one_hot.shape)
+print("Shape of test_labels_one_hot:", test_labels_one_hot.shape)
 
 
-def read(x): return idx2numpy.convert_from_file(x)
+# training_images_data ='Data/train-images.idx3-ubyte'
+# training_labels_data = 'Data/train-labels.idx1-ubyte'
+# test_images_data = 'Data/t10k-images.idx3-ubyte'
+# test_labels_data = 'Data/t10k-labels.idx1-ubyte'
 
-training_images = read(training_images_data)
-training_labels = read(training_labels_data)
-test_images = read(test_images_data)
-test_labels = read(test_labels_data)
 
-plt.imshow(training_images[1], cmap=plt.cm.binary)
+# def read(x): return idx2numpy.convert_from_file(x)
+
+# training_images = read(training_images_data)
+# training_labels = read(training_labels_data)
+# test_images = read(test_images_data)
+# test_labels = read(test_labels_data)
+
+# plt.imshow(training_images[1], cmap=plt.cm.binary)
 
 
 # ## KNN for MNIST data set 60000
