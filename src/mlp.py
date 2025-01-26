@@ -16,6 +16,11 @@ def cross_entropy_loss(y_true, y_pred):
     y_pred = np.clip(y_pred, 1e-12, 1. - 1e-12)
     return -np.sum(y_true * np.log(y_pred)) / y_true.shape[0]
 
+def cross_entropy_loss_with_l2(y_true, y_pred, W1, W2, lambda_l2=0.01):
+    loss = cross_entropy_loss(y_true, y_pred)
+    l2_term = (lambda_l2 / 2) * (np.sum(W1 ** 2) + np.sum(W2 ** 2))
+    return loss + l2_term
+
 # Weights initialization
 def initialize_weights(input_size, hidden_size, output_size):
     np.random.seed(42)
@@ -57,16 +62,27 @@ def update_weights(W1, b1, W2, b2, dW1, db1, dW2, db2, learning_rate):
     return W1, b1, W2, b2
 
 # Training of the model
-def train(X_train, y_train, input_size, hidden_size, output_size, learning_rate, epochs):
+def train_with_validation(X_train, y_train, X_val, y_val, input_size, hidden_size, output_size, learning_rate, epochs):
     W1, b1, W2, b2 = initialize_weights(input_size, hidden_size, output_size)
+    validation_accuracies = []
     for epoch in range(epochs):
+        # Forward propagation
         A2, cache = forward_propagation(X_train, W1, b1, W2, b2)
+        # Loss calculation
         loss = cross_entropy_loss(y_train, A2)
+        # Backward propagation
         dW1, db1, dW2, db2 = backward_propagation(X_train, y_train, cache, W1, W2)
+        # Update weights
         W1, b1, W2, b2 = update_weights(W1, b1, W2, b2, dW1, db1, dW2, db2, learning_rate)
+        
+        # Calculate accuracy on validation set
+        val_predictions = predict(X_val, W1, b1, W2, b2)
+        val_accuracy = accuracy(y_val, val_predictions)
+        validation_accuracies.append(val_accuracy)
+        
         if epoch % 100 == 0:
-            print(f"Epoch {epoch}, Loss: {loss:.4f}")
-    return W1, b1, W2, b2
+            print(f"Epoch {epoch}, Loss: {loss:.4f}, Validation Accuracy: {val_accuracy:.4f}")
+    return W1, b1, W2, b2, validation_accuracies
 
 # Prediction
 def predict(X, W1, b1, W2, b2):
