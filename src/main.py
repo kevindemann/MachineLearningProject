@@ -21,15 +21,17 @@ augment_translate = 0.1
 img_shape = (16, 15)
 
 data = preprocessing.load_data(dataset_path)
-augmented_data = augmentation.augment_data(data, augment_noise, augment_scale, augment_rotate, augment_translate, img_shape)
-util.show_dataset(augmented_data, title= "Augmented data", img_shape=img_shape)
 
 num_classes = 10
 samples_per_class = 200
 train_samples_per_class = 100
 test_samples_per_class = 100
 
-train_data, test_data = preprocessing.split_data(augmented_data, num_classes, samples_per_class, train_samples_per_class)
+train_data, test_data = preprocessing.split_data(data, num_classes, samples_per_class, train_samples_per_class)
+
+train_data = augmentation.augment_data(train_data, augment_noise, augment_scale, augment_rotate, augment_translate, img_shape)
+util.show_dataset(train_data, title= "Augmented training data", img_shape=img_shape)
+util.show_dataset(test_data, title= "Testing data", img_shape=img_shape)
 
 train_labels, test_labels = preprocessing.create_labels(num_classes, train_samples_per_class, test_samples_per_class)
 
