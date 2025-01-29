@@ -20,7 +20,7 @@ train_labels_one_hot = preprocessing.one_hot_encode(train_labels)
 test_labels_one_hot = preprocessing.one_hot_encode(test_labels)
 
 input_size = train_data.shape[1]
-hidden_size = 64
+hidden_size = 128
 output_size = num_classes
 initial_learning_rate = 0.01
 epochs = 2000
@@ -50,14 +50,11 @@ W1, b1, W2, b2, validation_accuracies = learning_rate_schedule.train_with_adam_e
     input_size, hidden_size, output_size, initial_learning_rate, epochs, patience=500, lambda_l2=0.01
 )
 
-# Accuracy on validation set
-import matplotlib.pyplot as plt
+# Prediction for Adam optimizer
+train_predictions_adam = learning_rate_schedule.predict(train_data, W1, b1, W2, b2)
+train_accuracy_adam = learning_rate_schedule.accuracy(train_labels_one_hot, train_predictions_adam)
+print(f"Accuracy on train set (Adam + Early Stopping): {train_accuracy_adam * 100:.2f}%")
 
-plt.figure(figsize=(10, 6))
-plt.plot(range(1, len(validation_accuracies) + 1), validation_accuracies, label="Validation Accuracy (Adam + Early Stopping)")
-plt.title("Validation Accuracy vs. Epochs")
-plt.xlabel("Epochs")
-plt.ylabel("Accuracy")
-plt.legend()
-plt.grid(True)
-plt.show()
+test_predictions_adam = learning_rate_schedule.predict(test_data, W1, b1, W2, b2)
+test_accuracy_adam = learning_rate_schedule.accuracy(test_labels_one_hot, test_predictions_adam)
+print(f"Accuracy on test set (Adam + Early Stopping): {test_accuracy_adam * 100:.2f}%")
