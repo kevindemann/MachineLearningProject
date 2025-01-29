@@ -1,3 +1,5 @@
 matplotlib
 numpy
 idx2numpy
+scikit-learn
+scikit-image

@@ -1,10 +1,25 @@
+import augmentation
 import preprocessing
 import mlp
 import learning_rate_schedule
-import time
+import util
+
 import matplotlib.pyplot as plt
+import numpy as np
+import time
 
 dataset_path = "small/mfeat-pix"
+
+np.random.seed(42)
+
+# Augmentation parameters. All params are ratios except for rotation
+augment_noise = 0.2
+augment_scale = 0.8
+augment_rotate = np.radians(15)
+augment_translate = 0.1
+
+img_shape = (16, 15)
+
 data = preprocessing.load_data(dataset_path)
 
 num_classes = 10
@@ -13,6 +28,10 @@ train_samples_per_class = 100
 test_samples_per_class = 100
 
 train_data, test_data = preprocessing.split_data(data, num_classes, samples_per_class, train_samples_per_class)
+
+train_data = augmentation.augment_data(train_data, augment_noise, augment_scale, augment_rotate, augment_translate, img_shape)
+util.show_dataset(train_data, title= "Augmented training data", img_shape=img_shape)
+util.show_dataset(test_data, title= "Testing data", img_shape=img_shape)
 
 train_labels, test_labels = preprocessing.create_labels(num_classes, train_samples_per_class, test_samples_per_class)
 
