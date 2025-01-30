@@ -1,37 +1,29 @@
 import skimage.transform
-from util import show_dataset
-
+import preprocessing
 import numpy as np
 from matplotlib import pyplot as plt
 import skimage
 
 
-def augment_data(input, noise_level, rel_scale, rotate_rad, rel_translate, img_shape):
+def augment_data(inputs, img_shape, rotate_rad, num_versions=2):
     """
-    Augments the input data with random noise, scale, rotation and translation.
+    Augments the input data by creating multiple rotated versions per image.
     """
-    minval = np.min(input)
-    maxval = np.max(input)
+    minval = np.min(inputs)
+    maxval = np.max(inputs)
 
-    output = np.empty_like(input)
+    augmented_data = []
+    for i in range(len(inputs)):
+        original = inputs[i].reshape(img_shape)
+        augmented_data.append(original.flatten())  # Keep the original image
 
-    for i in range(len(input)):
-        scale = rel_scale + (1 - rel_scale) * np.random.random()
-        rotate = (np.random.random() - 0.5) * 2 * rotate_rad
-        translate = (np.random.random(2) - 0.5) * 2 * rel_translate * img_shape
+        for _ in range(num_versions):
+            rotate = (np.random.random() - 0.5) * 2 * rotate_rad
+            tform = skimage.transform.AffineTransform(rotation=rotate)
+            transformed = skimage.transform.warp(original, inverse_map=tform.inverse)
+            augmented_data.append(np.clip(transformed, minval, maxval).flatten())
 
-        noise = np.random.normal(0, noise_level * maxval, img_shape)
-        tform = skimage.transform.AffineTransform(
-            scale=scale, rotation=rotate, shear=0, translation=translate
-        )
-
-        transformed = skimage.transform.warp(
-            input[i].reshape(img_shape), inverse_map=tform.inverse
-        )
-
-        output[i] = np.clip(transformed + noise, minval, maxval).flatten()
-
-    return output
+    return np.vstack(augmented_data)
 
 
 # Test for augmenting data
@@ -40,27 +32,26 @@ if __name__ == "__main__":
 
     np.random.seed(42)
 
-    dataset_path = "small/mfeat-pix"
+    dataset_path = "data/mfeat-pix"
 
     # Augmentation parameters. All params are ratios except for rotation
-    augment_noise = 0.2
-    augment_scale = 0.7
-    augment_rotate = np.radians(15)
-    augment_translate = 0.15
-
+    augment_rotate = np.radians(12)
     img_shape = (16, 15)
 
     data = preprocessing.load_data(dataset_path)
 
-    show_dataset(
-        data,
-        "Original data",
-        img_shape,
-    )
+    fig, axes = plt.subplots(2, 5, figsize=(10, 4))
+    for i, ax in enumerate(axes.flatten()):
+        ax.imshow(data[i].reshape(img_shape), cmap="gray")
+        ax.axis("off")
+    plt.suptitle("Original Data")
+    plt.show()
 
-    augmented = augment_data(
-        data, augment_noise, augment_scale, augment_rotate, augment_translate, img_shape
-    )
-    show_dataset(augmented, "augmented data", img_shape)
+    augmented = augment_data(data, img_shape, augment_rotate, num_versions=3)
 
+    fig, axes = plt.subplots(2, 5, figsize=(10, 4))
+    for i, ax in enumerate(axes.flatten()):
+        ax.imshow(augmented[i].reshape(img_shape), cmap="gray")
+        ax.axis("off")
+    plt.suptitle("Augmented Data")
     plt.show()
