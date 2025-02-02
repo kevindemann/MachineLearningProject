@@ -54,4 +54,6 @@ def visualization(history, title, epochs = 300):
 
     # Adjust layout
     plt.tight_layout()
+    save_path = "../visualizations/training_plot.pdf"
+    plt.savefig(save_path, format="pdf", dpi=300, bbox_inches='tight')
     plt.show()
