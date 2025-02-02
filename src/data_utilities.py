@@ -3,7 +3,7 @@ import jax.numpy as jnp
 import numpy as np
 import pandas as pd
 
-def schuffel_data(x, y, seed):
+def schuffel_data(x, y, seed = 42):
     key = random.PRNGKey(seed) 
     permutation = random.permutation(key, x.shape[0])
     return x[permutation], y[permutation]
@@ -52,13 +52,13 @@ def data_split(x, y, split_coeff = 0.8):
     
     return sc_x, sc_y, sc_inv_x, sc_inv_y
 
-def prepare_data(x_input, y_target, standerdize = True):
+def prepare_data(x_input, y_target, split_coeff = 0.8, standerdize = True, ):
 
 
-    x_train, y_train, x_test, y_test = data_split(x_input, y_target, 0.8)
+    x_train, y_train, x_test, y_test = data_split(x_input, y_target, split_coeff)
 
 
-    x_train_n, y_train_n, x_train_v, y_train_v = data_split(x_train, y_train, 0.8)
+    #x_train_n, y_train_n, x_train_v, y_train_v = data_split(x_train, y_train, 0.8)
 
 
     if standerdize:
@@ -69,11 +69,11 @@ def prepare_data(x_input, y_target, standerdize = True):
         x_test = (x_test - mean_train)/std_train
                 
         #Validation
-        x_std_train_n, mean_train_n, std_train_n = standardize_data(x_train_n)
-        x_train_n = x_std_train_n
-        x_train_v = (x_train_v - mean_train_n)/std_train_n
+        #x_std_train_n, mean_train_n, std_train_n = standardize_data(x_train_n)
+        #x_train_n = x_std_train_n
+        #x_train_v = (x_train_v - mean_train_n)/std_train_n
 
-    return x_train, y_train, x_train_n, y_train_n, x_train_v, y_train_v, x_test, y_test
+    return x_train, y_train, x_test, y_test, #x_train_n, #y_train_n, #x_train_v, #y_train_v, 
   
 def mnist_data_load(percent = 0.1):
     

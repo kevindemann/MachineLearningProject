@@ -8,16 +8,22 @@ def load_data(filepath):
     data = np.loadtxt(filepath)
     return data
 
-def split_data(data, num_classes, samples_per_class, train_samples_per_class):
+def split_data(data, data_labels, num_classes, samples_per_class, train_samples_per_class):
     """
     Divides train set and test set.
     """
     train_data = []
     test_data = []
+    
+  
+    
     for i in range(num_classes):
         class_data = data[i * samples_per_class:(i + 1) * samples_per_class]
+        
         train_data.append(class_data[:train_samples_per_class])
         test_data.append(class_data[train_samples_per_class:])
+     
+
     return np.vstack(train_data), np.vstack(test_data)
 
 def create_labels(num_classes, train_samples_per_class, test_samples_per_class):
@@ -34,3 +40,5 @@ def one_hot_encode(labels):
     """
     encoder = OneHotEncoder(sparse_output=False)
     return encoder.fit_transform(labels.reshape(-1, 1))
+
+
