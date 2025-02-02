@@ -108,7 +108,7 @@ class Classifier(object):
 
 
     def train(self, data = None, params = None, loss = 'cross_entropy', loss_params = {'lambda_lasso': 0, 'lambda_ridge': 0}, 
-              optimizer = 'gd', optimizer_params = {'alpha': 0.01}, batch_size = 50, epochs = 200, epoch_rate = 10, seed = 42):
+              optimizer = 'gd', optimizer_params = {'alpha': 0.001}, batch_size = 50, epochs = 200, epoch_rate = 10, seed = 42):
         
         history = {'loss_train': np.zeros(epochs), 'accuracy_train': np.zeros(epochs), 'loss_test': np.zeros(epochs), 'accuracy_test': np.zeros(epochs)}
         

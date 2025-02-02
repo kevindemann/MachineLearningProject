@@ -30,7 +30,7 @@ def visualization(history, title, epochs = 300):
     #filtered_info = {k: v for k, v in info.items() if v != 0.0}
     
 
-
+    epochs = np.linspace(1, epochs, epochs)
     # Create figure and subplots
     fig, axes = plt.subplots(1, 2, figsize=(12, 5))
     fig.suptitle(title)

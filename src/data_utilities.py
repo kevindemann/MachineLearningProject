@@ -18,13 +18,21 @@ def batch_generator(x_input, y_target, batch_size, schuffel = True, seed = 42):
     if schuffel:     
         x_input, y_target = schuffel_data(x_input, y_target, seed)
     
-    for i in range(n_batches):
+    for i in range(n_batches + 1):
         
         #x_batches = x_batches.at[i].set(x_input[i*batch_size:(i+1)*batch_size,:])
         #y_batches = y_batches.at[i].set(y_target[i*batch_size:(i+1)*batch_size])
+        
+      
+        if i < n_batches:
+            x_batch = jnp.array(x_input[i*batch_size:(i+1)*batch_size,:])
+            y_batch = jnp.array(y_target[i*batch_size:(i+1)*batch_size])
+        
+        elif len(y_target)/batch_size > n_batches:
 
-        x_batch = jnp.array(x_input[i*batch_size:(i+1)*batch_size,:])
-        y_batch = jnp.array(y_target[i*batch_size:(i+1)*batch_size])
+            x_batch = jnp.array(x_input[i*batch_size:,:])
+            y_batch = jnp.array(y_target[i*batch_size:])
+        
     
         yield x_batch, y_batch
         
